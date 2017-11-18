@@ -287,8 +287,8 @@ function rule(){
 }
 
 function usage() {
-  echo "Usage: autoCut -a APPLICATION[,APPLICATION][,..] -i %file% [ -r ] [ -t ] [ -f ] [ -s ] [ -e ] [ -d ] [ -m ] [ -o ] [ -z ] [ -j ] [ -l ] "
-  echo "Applications (any order):"
+  echo "Usage: autoCut -f FUNCTION[,FUNCTION][,..] -i %file% [ -r ] [ -t ] [ -f ] [ -s ] [ -e ] [ -d ] [ -m ] [ -o ] [ -z ] [ -j ] [ -l ] "
+  echo "Functions (any order):"
   printf "  $FN_REKEY %-12s-- rekey every n seconds (default $rekeyInterval sec)\n"
   printf "  $FN_ADJUSTTEMPO %-12s-- change audio & video tempo (default $tempoFactor percentage)\n"
   printf "  $FN_FADEINOUT  %-12s-- fade In&Out (default $fadeFrames frames)\n"
@@ -296,14 +296,14 @@ function usage() {
   printf "  $FN_RECAP %-12s-- create recap video\n"
   printf "  $FN_JOIN  %-12s-- join video segments\n"
   echo "Options:"
-  echo "  -a APPLICATION    Comma-delimited list from above in the order of execution"
+  echo "  -f FUNCTION    Comma-delimited list from above in the order of execution"
   echo "  -i INPUT_FILE     Input file"
   echo "  [$FN_REKEY] arguments:"
   echo "    -r  [$FN_REKEY] Rekey interval. Example: autocut -a rekey -i input -r 5"
   echo "  [$FN_ADJUSTTEMPO] arguments:"
   echo "    -t  [$FN_ADJUSTTEMPO] Tempo reajustment factor. Example: autocut -a tempo -i input -t 50 'would slowdown video&autio to 50%'"
   echo "  [$FN_FADEINOUT] arguments:"
-  echo "    -f  [$FN_FADEINOUT] Fade In/Out frame count. Example: autocut -a fade -i input -f 10 'would fade in 10 frames from the begging & 10 frames from the end'"
+  echo "    -h  [$FN_FADEINOUT] Fade In/Out frame count. Example: autocut -a fade -i input -f 10 'would fade in 10 frames from the begging & 10 frames from the end'"
   echo "  [$FN_SLICE] arguments:"
   echo "    -s  [$FN_SLICE] Slice from frame. Example: autocut -a slice -i input -s 200 e 500. Slicing from 200 to 500 frames"
   echo "    -e  [$FN_SLICE] Slice to frame. Example: autocut -a slice -i input -e 2000. Where start frame would be defaulted to 0"
@@ -323,7 +323,7 @@ welcome
 
 while getopts "a:i:r:l:t:f:s:e:d:m:o:z:j:" opt; do
   case $opt in
-    a)  IFS=',' read -a FUNCTIONS <<< ${OPTARG}
+    f)  IFS=',' read -a FUNCTIONS <<< ${OPTARG}
         ;;
     i) input=$OPTARG;;
     r) if [[ $OPTARG -ge 1 ]]; then
@@ -343,7 +343,7 @@ while getopts "a:i:r:l:t:f:s:e:d:m:o:z:j:" opt; do
           exit 1
         fi
         ;;
-    f) if [[ $OPTARG -ge 1 && $OPTARG -le 999 ]]; then
+    h) if [[ $OPTARG -ge 1 && $OPTARG -le 999 ]]; then
           fadeFrames=$OPTARG
        else
           error "Fade frames range is [1..999]"
