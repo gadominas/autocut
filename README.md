@@ -13,6 +13,7 @@ Functions (any order):
   slice             -- slice video (from/to frame is set to from: 0 to: 100)
   recap             -- create recap video
   join              -- join video segments
+  mkv2mp4           -- convert mkv to mp4
 Options:
   -f FUNCTION    Comma-delimited list from above in the order of execution
   -i INPUT_FILE     Input file

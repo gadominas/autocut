@@ -12,6 +12,7 @@ FN_ADJUSTTEMPO="tempo"
 FN_CUT="cut"
 FN_RECAP="recap"
 FN_JOIN="join"
+FN_MKV2MP4="mkv2mp4"
 
 # commont arguments
 input=undefined.mp4
@@ -244,7 +245,7 @@ function recap(){
 }
 
 # join API
-join(){
+function join(){
   output="joined_$input"
   log "Concatenating files:"
   log "Segments directory: $segmentsDir"
@@ -261,6 +262,16 @@ join(){
   ffmpeg -y -loglevel $ffmpegLogLevel -f concat -i list.txt -c copy $output
 
   rm list.txt
+  input=$output
+}
+
+#mkv2mp4 APIs
+function mkv2mp4(){
+  output="$input.mp4"
+  log "Input: $input"
+  log "Output: $output"
+
+  ffmpeg -y -loglevel $ffmpegLogLevel -i $input -c:v copy -f mp4 $output
   input=$output
 }
 
@@ -295,6 +306,7 @@ function usage() {
   printf "  $FN_SLICE %-12s-- slice video (from/to frame is set to from: $sliceFromFrame to: $sliceToFrame)\n"
   printf "  $FN_RECAP %-12s-- create recap video\n"
   printf "  $FN_JOIN  %-12s-- join video segments\n"
+  printf "  $FN_MKV2MP4%-11s-- convert mkv to mp4\n"
   echo "Options:"
   echo "  -f FUNCTION    Comma-delimited list from above in the order of execution"
   echo "  -i INPUT_FILE     Input file"
@@ -403,8 +415,11 @@ done
 
 log "Processing pipe: { $(echo $FUNCTIONS|sed 's/ / > /g') }"
 
+start=$SECONDS
+
 for cmd in ${FUNCTIONS[@]}; do
   rule "-"
+  fstart=$SECONDS
   log "Running: $cmd"
 
   if [ "$cmd" == "$FN_FADEINOUT" ] ; then
@@ -419,9 +434,15 @@ for cmd in ${FUNCTIONS[@]}; do
     recap
   elif [ "$cmd" == "$FN_JOIN" ] ; then
     join
+  elif [ "$cmd" == "$FN_MKV2MP4" ] ; then
+    mkv2mp4
   else
     usage
   fi
 
-  log "Finished: $cmd"
+  fduration=$(( SECONDS - fstart ))
+  log "Finished: $cmd (took: $fduration)"
 done
+
+duration=$(( SECONDS - start ))
+echo "Execution time: $duration seconds"
