@@ -1,3 +1,4 @@
+```
  ______     __  __     ______   ______     ______     __  __     ______
 /\  __ \   /\ \/\ \   /\__  _\ /\  __ \   /\  ___\   /\ \/\ \   /\__  _\
 \ \  __ \  \ \ \_\ \  \/_/\ \/ \ \ \/\ \  \ \ \____  \ \ \_\ \  \/_/\ \/
@@ -33,3 +34,4 @@ Options:
     -j  [join] Join video segments (default directory/mask: output/*.mp4)
   [ffmpeg] arguments:
     -l  ffmpeg log level {panic,fatal,error,warning,info,verbose,debug}. Default is quiet
+```
