@@ -321,7 +321,7 @@ function usage() {
 
 welcome
 
-while getopts "a:i:r:l:t:f:s:e:d:m:o:z:j:" opt; do
+while getopts "h:i:r:l:t:f:s:e:d:m:o:z:j:" opt; do
   case $opt in
     f)  IFS=',' read -a FUNCTIONS <<< ${OPTARG}
         ;;
