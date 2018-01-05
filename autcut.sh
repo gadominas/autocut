@@ -13,6 +13,7 @@ FN_CUT="cut"
 FN_RECAP="recap"
 FN_JOIN="join"
 FN_MKV2MP4="mkv2mp4"
+FN_MOV2MP3="mov2mp3"
 
 # commont arguments
 input=undefined.mp4
@@ -109,6 +110,12 @@ blacklist=(
 )
 
 # AUTO CUT API -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function mov2mp3(){
+    out=$input".mp3"
+    ffmpeg -y -loglevel $ffmpegLogLevel -i $input -q:a 0 -map a $out
+    input=$out
+}
+
 # slice API
 function slice(){
     out="sliced_"$sliceFromFrame"_"$sliceToFrame"_"$input
@@ -307,6 +314,7 @@ function usage() {
   printf "  $FN_RECAP %-12s-- create recap video\n"
   printf "  $FN_JOIN  %-12s-- join video segments\n"
   printf "  $FN_MKV2MP4%-11s-- convert mkv to mp4\n"
+  printf "  $FN_MOV2MP3%-11s-- extract audio track as mp3 from an input video\n"
   rule "_"
   echo "Options:"
   echo "  -f FUNCTION       Comma-delimited list from above in the order of execution"
@@ -367,7 +375,7 @@ while getopts "h:i:r:l:t:f:s:e:d:m:o:z:j:" opt; do
     s) if [[ $OPTARG -ge 1 ]]; then
          sliceFromFrame=$OPTARG
        else
-          error "Slice from frame # should be postive"
+          error "Slice from frame # should be postive ($OPTARG)"
           usage
           exit 1
           fi
@@ -422,6 +430,7 @@ for cmd in ${FUNCTIONS[@]}; do
   rule "-"
   fstart=$SECONDS
   log "Running: $cmd"
+  log "Input: $input"
 
   if [ "$cmd" == "$FN_FADEINOUT" ] ; then
     fade
@@ -437,11 +446,14 @@ for cmd in ${FUNCTIONS[@]}; do
     join
   elif [ "$cmd" == "$FN_MKV2MP4" ] ; then
     mkv2mp4
+  elif [ "$cmd" == "$FN_MOV2MP3" ] ; then
+    mov2mp3
   else
     usage
   fi
 
   fduration=$(( SECONDS - fstart ))
+  log "Output: $input"
   log "Finished: $cmd (took: $fduration)"
 done
 
