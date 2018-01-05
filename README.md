@@ -39,12 +39,12 @@ Options:
 
 ```
 
-In case you want to convert mkv to mp4, cut small fragment, accelerate video&audio by 20% and apply fadeIn and fadeOut filters that can be converted to onne-liner cli cmd:
+In case you want to convert a mkv to mp4, cut a small fragment, accelerate video&audio by 20% and apply fadeIn and fadeOut filters that can be converted to one-liner cli cmd:
 ```
 autocut -f mkv2mp4,slice,tempo,fade -i input_video_file.mkv -s 0 -e 200 - t 120
 ```
 
-As result input video will be converted, small fragment of 200 frames starting from the begging will be sliced and accelerated by 20% applying fadeIn/Out filters.
+As a result input video will be converted, small fragment of 200 frames starting from the begging will be sliced and accelerated by 20% applying fadeIn/Out filters.
 
 Recap function basically was the main purpose of such ffmpeg cli. Recap function takes video input file cuts fragments equally distributing the cut time and then joins them together.
 It's important to rekey video according to your fragment duration in order to have clean cut on keyframe. For example:
