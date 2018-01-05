@@ -49,7 +49,7 @@ As a result input video will be converted, small fragment of 200 frames starting
 Recap function basically was the main purpose of such ffmpeg cli. Recap function takes video input file cuts fragments equally distributing the cut time and then joins them together.
 It's important to rekey video according to your fragment duration in order to have clean cut on keyframe. For example:
 ```
-autocut -f mkv2mp4,recap -i input_video_file.mkv -d 120 -m 10 -0 10
+autocut -f mkv2mp4,recap -i input_video_file.mkv -d 120 -m 10 -o 10
 ```
 
 As a result recap video will be made out of input file. Duration of result video is 2 minutes (120sec) composing of small fragments of 10 seconds. Offset can be applied in order to skip titles or etc.
