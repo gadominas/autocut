@@ -61,26 +61,26 @@ autocut -f mkv2mp4,recap -i input_video_file.mkv -d 120 -m 10 -o 10
 As a result recap video will be made out of input file. Duration of result video is 2 minutes (120sec) composing of small fragments of 10 seconds. Offset can be applied in order to skip titles or etc.
 Like whole Silicon Valley Season4 was sliced using such approach: https://www.youtube.com/watch?v=pfg-uCFGF3w&list=PLnbD0OU7iJ_-24yY169dowgYQZ294HX7m
 
-Some other features:
-*rekey*
+## Some other features:
+###### rekey
 tbd
 
-*tempo*
+###### tempo
 tbd
 
-*fade*
+###### fade
 tbd
 
-*slice*
+###### slice
 tbd
 
-*recap*
+###### recap
 tbd
 
-*join*
+###### join
 tbd
 
-*mov2gif*
+###### mov2gif
 Converts video to animated gif. You can control the duration of the animated gif, fps and scale factors.
 ```
 autocut -f mov2gif -u 30 -p 5 -s 1024 -i Untitled.mov
