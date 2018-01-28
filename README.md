@@ -47,7 +47,7 @@ Options:
 
 In case you want to convert a mkv to mp4, cut a small fragment, accelerate video&audio by 20% and apply fadeIn and fadeOut filters that can be converted to one-liner cli cmd:
 ```
-autocut -f mkv2mp4,slice,tempo,fade -i input_video_file.mkv -s 0 -e 200 - t 120
+autocut -f mkv2mp4,slice,tempo,fade -i input_video_file.mkv -s 0 -e 200 -t 120
 ```
 
 Input video will be converted, small fragment of 200 frames starting from the begging will be sliced and accelerated by 20% applying fadeIn/Out filters.
