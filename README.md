@@ -4,8 +4,8 @@
 \ \  __ \  \ \ \_\ \  \/_/\ \/ \ \ \/\ \  \ \ \____  \ \ \_\ \  \/_/\ \/
  \ \_\ \_\  \ \_____\    \ \_\  \ \_____\  \ \_____\  \ \_____\    \ \_\
   \/_/\/_/   \/_____/     \/_/   \/_____/   \/_____/   \/_____/     \/_/
-=======================================================================================================================================================================
-Usage: autoCut -f FUNCTION[,FUNCTION][,..] -i %file% [ -r ] [ -t ] [ -f ] [ -s ] [ -e ] [ -d ] [ -m ] [ -o ] [ -z ] [ -j ] [ -l ]
+========================================================================================================================================================================
+Usage: autoCut -f FUNCTION[,FUNCTION][,..] -i %file% [ -r ] [ -t ] [ -f ] [ -s ] [ ... ]
 Functions (any order):
   rekey             -- rekey every n seconds (default 7 sec)
   tempo             -- change audio & video tempo (default 120 percentage)
@@ -14,7 +14,9 @@ Functions (any order):
   recap             -- create recap video
   join              -- join video segments
   mkv2mp4           -- convert mkv to mp4
-_______________________________________________________________________________________________________________________________________________________________________
+  mov2mp3           -- extract audio track as mp3 from an input video
+  mov2gif           -- convert video to animated gif
+________________________________________________________________________________________________________________________________________________________________________
 Options:
   -f FUNCTION       Comma-delimited list from above in the order of execution
   -i INPUT_FILE     Input file
@@ -34,6 +36,10 @@ Options:
         -z  [recap] Working directory for recap process (default: output)
   [join] arguments:
         -j  [join] Join video segments (default directory/mask: output/*.mp4)
+  [mov2gif] arguments:
+        -u  [join] duration of the animated gif (default 30sec)
+        -p  [join] ftp of the animated video (default 15fps)
+        -c  [join] scale of the animated video (default 800px)
   [ffmpeg] arguments:
         -l  ffmpeg log level {panic,fatal,error,warning,info,verbose,debug}. Default is quiet
 
@@ -44,7 +50,7 @@ In case you want to convert a mkv to mp4, cut a small fragment, accelerate video
 autocut -f mkv2mp4,slice,tempo,fade -i input_video_file.mkv -s 0 -e 200 - t 120
 ```
 
-As a result input video will be converted, small fragment of 200 frames starting from the begging will be sliced and accelerated by 20% applying fadeIn/Out filters.
+Input video will be converted, small fragment of 200 frames starting from the begging will be sliced and accelerated by 20% applying fadeIn/Out filters.
 
 Recap function basically was the main purpose of such ffmpeg cli. Recap function takes video input file cuts fragments equally distributing the cut time and then joins them together.
 It's important to rekey video according to your fragment duration in order to have clean cut on keyframe. For example:
@@ -54,6 +60,31 @@ autocut -f mkv2mp4,recap -i input_video_file.mkv -d 120 -m 10 -o 10
 
 As a result recap video will be made out of input file. Duration of result video is 2 minutes (120sec) composing of small fragments of 10 seconds. Offset can be applied in order to skip titles or etc.
 Like whole Silicon Valley Season4 was sliced using such approach: https://www.youtube.com/watch?v=pfg-uCFGF3w&list=PLnbD0OU7iJ_-24yY169dowgYQZ294HX7m
+
+Some other features:
+*rekey*
+tbd
+
+*tempo*
+tbd
+
+*fade*
+tbd
+
+*slice*
+tbd
+
+*recap*
+tbd
+
+*join*
+tbd
+
+*mov2gif*
+Converts video to animated gif. You can control the duration of the animated gif, fps and scale factors.
+```
+autocut -f mov2gif -u 30 -p 5 -s 1024 -i Untitled.mov
+```
 
 I hope this helps someone who needs simple and flexible ffmpeg cli.
 Enjoy!

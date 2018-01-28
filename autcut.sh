@@ -14,6 +14,7 @@ FN_RECAP="recap"
 FN_JOIN="join"
 FN_MKV2MP4="mkv2mp4"
 FN_MOV2MP3="mov2mp3"
+FN_MOV2GIF="mov2gif"
 
 # commont arguments
 input=undefined.mp4
@@ -40,6 +41,11 @@ durationOfMovie=261
 maxSecInFrame=21
 sliceOffset=10
 recapOutputDir=output
+
+# movie to animated gifFpslog "Gif duration: "$gifDuration
+gifFps=15
+gifScale=800
+gifDuration=30
 
 offsetArray=(
   0 #0
@@ -110,6 +116,16 @@ blacklist=(
 )
 
 # AUTO CUT API -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+function mov2gif(){
+    log "Gif duration: "$gifDuration
+    log "Gif fps: "$gifFps
+    log "Gif scale: "$gifScale
+
+    out=$input".mp3"
+    ffmpeg -loglevel $ffmpegLogLevel -ss 00 -t $gifDuration -i $input -filter_complex "fps="$gifFps",scale="$gifScale":-1:flags=lanczos[x];[x]split[x1][x2]; [x1]palettegen[p];[x2][p]paletteuse" $out.gif
+    input=$out
+}
+
 function mov2mp3(){
     out=$input".mp3"
     ffmpeg -y -loglevel $ffmpegLogLevel -i $input -q:a 0 -map a $out
@@ -305,7 +321,7 @@ function rule(){
 }
 
 function usage() {
-  echo "Usage: autoCut -f FUNCTION[,FUNCTION][,..] -i %file% [ -r ] [ -t ] [ -f ] [ -s ] [ -e ] [ -d ] [ -m ] [ -o ] [ -z ] [ -j ] [ -l ] "
+  echo "Usage: autoCut -f FUNCTION[,FUNCTION][,..] -i %file% [ -r ] [ -t ] [ -f ] [ -s ] [ ... ]"
   echo "Functions (any order):"
   printf "  $FN_REKEY %-12s-- rekey every n seconds (default $rekeyInterval sec)\n"
   printf "  $FN_ADJUSTTEMPO %-12s-- change audio & video tempo (default $tempoFactor percentage)\n"
@@ -315,6 +331,7 @@ function usage() {
   printf "  $FN_JOIN  %-12s-- join video segments\n"
   printf "  $FN_MKV2MP4%-11s-- convert mkv to mp4\n"
   printf "  $FN_MOV2MP3%-11s-- extract audio track as mp3 from an input video\n"
+  printf "  $FN_MOV2GIF%-11s-- convert video to animated gif\n"
   rule "_"
   echo "Options:"
   echo "  -f FUNCTION       Comma-delimited list from above in the order of execution"
@@ -335,6 +352,10 @@ function usage() {
   echo "        -z  [$FN_RECAP] Working directory for recap process (default: $recapOutputDir)"
   echo "  [$FN_JOIN] arguments:"
   echo "        -j  [$FN_JOIN] Join video segments (default directory/mask: $segmentsDir)"
+  echo "  [$FN_MOV2GIF] arguments:"
+  echo "        -u  [$FN_JOIN] duration of the animated gif (default 30sec)"
+  echo "        -p  [$FN_JOIN] ftp of the animated video (default 15fps)"
+  echo "        -c  [$FN_JOIN] scale of the animated video (default 800px)"
   echo "  [ffmpeg] arguments:"
   echo "        -l  ffmpeg log level {panic,fatal,error,warning,info,verbose,debug}. Default is $ffmpegLogLevel"
   exit
@@ -342,7 +363,7 @@ function usage() {
 
 welcome
 
-while getopts "h:i:r:l:t:f:s:e:d:m:o:z:j:" opt; do
+while getopts "h:i:r:l:t:f:s:e:d:m:o:z:j:u:p:c" opt; do
   case $opt in
     f)  IFS=',' read -a FUNCTIONS <<< ${OPTARG}
         ;;
@@ -412,6 +433,30 @@ while getopts "h:i:r:l:t:f:s:e:d:m:o:z:j:" opt; do
           exit 1
           fi
         ;;
+    u) if [[ $OPTARG -ge 1 ]]; then
+          gifDuration=$OPTARG
+       else
+          error "Slice offset should be positive"
+          usage
+          exit 1
+          fi
+        ;;
+    p) if [[ $OPTARG -ge 1 ]]; then
+          gifFps=$OPTARG
+       else
+          error "Slice offset should be positive"
+          usage
+          exit 1
+          fi
+        ;;
+    c) if [[ $OPTARG -ge 1 ]]; then
+          gifScale=$OPTARG
+       else
+          error "Slice offset should be positive"
+          usage
+          exit 1
+          fi
+        ;;
     z) recapOutputDir=$OPTARG;;
     j) segmentsDir=$OPTARG;;
     *)  usage
@@ -448,6 +493,8 @@ for cmd in ${FUNCTIONS[@]}; do
     mkv2mp4
   elif [ "$cmd" == "$FN_MOV2MP3" ] ; then
     mov2mp3
+  elif [ "$cmd" == "$FN_MOV2GIF" ] ; then
+    mov2gif
   else
     usage
   fi
